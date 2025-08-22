@@ -92,3 +92,36 @@ Replace <container_id> with the short ID from docker ps -a.
 ```bash
 docker stop <container_id>
 ```
+
+Perfect 🚀 You’re moving step by step like a pro.
+Now let’s talk about Docker Images — the blueprints for containers.
+
+
+### Step 7: Working with Images
+- 1. List images on your system
+```bash
+docker images
+```
+
+- 2. Pull (download) an image manually
+```bash
+docker pull alpine
+```
+
+- alpine is a very small Linux distribution (just a few MB).
+- After pulling, check again with docker images.
+
+- 3. Run a container from that image
+```bash
+docker run -it alpine sh
+```
+Here:
+alpine is the image.
+sh is the shell (Alpine doesn’t come with bash).
+
+- 4. Remove an image
+```bash
+docker rmi alpine 
+```
+⚠️ You must stop and remove any containers created from that image before deleting it.
+
