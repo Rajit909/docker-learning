@@ -125,3 +125,96 @@ docker rmi alpine
 ```
 ⚠️ You must stop and remove any containers created from that image before deleting it.
 
+# Creating a Container for a Next.js App
+
+To containerize a Next.js application (or any Node.js app), you need two main files:
+
+- Dockerfile – Defines the environment, dependencies, and commands required to build and run your app inside a container.
+
+- .dockerignore – Excludes unnecessary files (like node_modules, build artifacts, logs, etc.) from being copied into the container, keeping the image clean and efficient.
+     
+Example .dockerignore
+      
+```bash
+ node_modeuls
+.env
+```
+
+
+## What is a Dockerfile?
+
+- A Dockerfile is a text file that contains step-by-step instructions for building a container image.
+It specifies:
+
+- Base image (e.g., node:20-alpine) that provides the runtime environment.
+
+- Application files to include inside the image (e.g., package.json, source code).
+
+- Dependencies installation (e.g., npm install).
+
+- Build steps (e.g., npm run build for Next.js).
+
+- Startup command to run when the container launches (e.g., npm run start).
+
+In short: A Dockerfile describes how to build and run your app inside a portable container.
+
+
+### Example of a dockerfile for nextjs app
+
+```bash
+# base image
+FROM node:20-alpine
+
+# set the working directory
+WORKDIR /src
+
+# copy package files
+COPY package*.json .
+
+#install dependencies
+RUN npm install
+
+# Copy the rest of the application code files
+COPY . .
+
+# start the application server
+CMD ["npm", "run", "dev"]
+```
+That's it all you need to do.
+Now you can run a build command to create a docker image by running 
+```bash
+docker build -t <your-app-name> 
+```
+
+So it will create a docker image for your nextjs app and you can check all images by running ``` docker images``` and then run that image by running ``` docker run -it -p <machine-port(3000)>:<container-port(3001)>  <image_name> ```
+
+- Now your app running on localhost:3000 and you can access it in any browser.
+
+
+OR You can create a dynamic port mapping when building image, so for that you can EXPOSE some port range in dockerfile like this -
+
+
+```bash
+# base image
+FROM node:20-alpine
+
+# set the working directory
+WORKDIR /src
+
+# copy package files
+COPY package*.json .
+
+#install dependencies
+RUN npm install
+
+# Copy the rest of the application code files
+COPY . .
+
+EXPOSE 3000-3005
+
+# start the application server
+CMD ["npm", "run", "dev"]
+```
+
+then you can build docker image and run then again.     
+That's it.
