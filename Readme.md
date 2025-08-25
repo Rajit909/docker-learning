@@ -218,3 +218,75 @@ CMD ["npm", "run", "dev"]
 
 then you can build docker image and run then again.     
 That's it.
+
+
+# Getting started with Docker Hub:
+
+🔹 What is Docker Hub?
+
+Docker Hub is a cloud-based container registry service provided by Docker, Inc.
+It’s like GitHub but for Docker images.
+
+- On GitHub, you store and share source code.
+
+- On Docker Hub, you store and share container images.
+
+- These images can be pulled (downloaded) and used by anyone, or pushed (uploaded) by you.
+
+🔹 Key Features of Docker Hub
+
+Image Repository
+
+- You can host your own Docker images (public or private).
+
+- Public repositories are free and accessible to everyone.
+
+- Private repositories are restricted to you or your team.
+
+Official Images
+
+- Docker Hub provides official images (maintained by Docker & verified publishers).
+
+- Example: mysql, nginx, redis, node, python.
+
+Push & Pull
+
+- Push → Upload your image to Docker Hub.
+
+- Pull → Download and use an image from Docker Hub.
+
+Automated Builds
+
+- You can connect Docker Hub with GitHub/GitLab.
+
+- Whenever you update your repo, Docker Hub can automatically build a new image.
+
+Teams & Permissions
+
+- Manage access control for organizations, teams, and collaborators.
+
+Webhooks
+
+- Trigger actions (like CI/CD pipelines) when a new image is pushed.
+
+
+## Push an Image to Docker Hub:
+To public or push your image to docker hub you need to run these command
+
+#### 1. Login to docker hub:
+```bash
+docker login
+```
+
+then run this
+
+```bash
+docker push your-image-name
+```
+Docker Hub = Central place to store, share, and distribute Docker container images.
+
+
+Anywhere else, you (or your team) can pull and run it:
+
+- docker pull your-image-name
+- docker run -d your-image-name
