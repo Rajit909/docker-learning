@@ -216,8 +216,62 @@ EXPOSE 3000-3005
 CMD ["npm", "run", "dev"]
 ```
 
-then you can build docker image and run then again.     
-That's it.
+## Creating multi stage build:
+# 🚀 Optimized Docker Build for Next.js
+
+This guide explains how to build a **production-ready, optimized Docker image** for a Next.js project.  
+The goal is to reduce image size, improve build speed, and make deployments easier.
+
+---
+
+## 🎯 Optimization Goals
+- ✅ **Multi-stage builds** → smaller image size  
+- ✅ **Dependency caching** → faster builds  
+- ✅ **Production-only dependencies** → `npm ci --only=production`  
+- ✅ **Minimal base image** → `node:18-alpine`  
+- ✅ **Standalone Next.js output** → lightweight runtime  
+
+---
+
+## 📂 Project Setup
+
+### `Dockerfile`
+```dockerfile
+# ------------ Base stage ------------
+FROM node:18-alpine AS base
+WORKDIR /app
+COPY package.json package-lock.json* ./
+
+
+# ------------ Dependencies stage ------------
+FROM base AS deps
+# Install only dependencies (cached if package.json doesn't change)
+RUN npm ci
+
+
+# ------------ Build stage ------------
+FROM deps AS build
+WORKDIR /app
+COPY . .
+# Build Next.js app
+RUN npm run build
+
+
+# ------------ Production stage ------------
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+# Run Next.js in standalone mode (requires next.config.js)
+COPY --from=build /app/next.config.js ./
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+
+EXPOSE 3000
+ENV NODE_ENV=production
+CMD ["node", "server.js"]
+
+
 
 
 # Getting started with Docker Hub:
@@ -290,3 +344,5 @@ Anywhere else, you (or your team) can pull and run it:
 
 - docker pull your-image-name
 - docker run -d your-image-name
+
+

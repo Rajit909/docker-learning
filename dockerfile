@@ -1,5 +1,5 @@
 # base image
-FROM node:20-alpine
+FROM node:20-alpine AS base
 
 # set the working directory
 WORKDIR /src
@@ -7,11 +7,28 @@ WORKDIR /src
 # copy package files
 COPY package*.json .
 
-#install dependencies
-RUN npm install
+#---------------Dependencies stage-------------
+FROM base AS deps 
 
-# Copy the rest of the application code files
+RUN npm ci
+
+#------------- build ----------------
+FROM deps AS build
+WORKDIR /src
 COPY . .
+RUN npm run build
 
-# start the application server
-CMD ["npm", "run", "dev"]
+#---------- Production stage -----------
+FROM node:20-alpine AS runner
+WORKDIR /src
+
+COPY --from=build /app/next.config.js ./
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+
+EXPOSE 3000
+
+ENV NODE_ENV=production
+
+CMD ["node", "server.js"]
